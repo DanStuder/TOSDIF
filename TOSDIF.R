@@ -1,4 +1,4 @@
-tosdif = function(fit1, fit2, g = NULL, alpha = NULL, rmseaa = NULL, rmseab = NULL, robust = TRUE) {
+tosdif = function(fit1, fit2, groups = NULL, alpha = NULL, rmseaa = NULL, rmseab = NULL, robust = TRUE) {
   
   # print the title
   cat("     Test of small differences in fit (McCallum et al., 2006)", "\n", "\n")
@@ -23,9 +23,9 @@ tosdif = function(fit1, fit2, g = NULL, alpha = NULL, rmseaa = NULL, rmseab = NU
     stop("Argument 'robust' needs to bei either TRUE or FALSE. Calculation was stopped.")}
   
   
-  # if g was not specified, set it to 1
-  if(is.null(g)) {
-    g = 1
+  # if groups was not specified, set it to 1
+  if(is.null(groups)) {
+    groups = 1
   }
   
   # if alpha was not specified, then set it to 0.05
@@ -57,8 +57,8 @@ tosdif = function(fit1, fit2, g = NULL, alpha = NULL, rmseaa = NULL, rmseab = NU
   
   
   ddiff = dfa - dfb                                  # df difference
-  fa = (dfa*rmseaa^2)/sqrt(g)                        # model A discrepancy fn value
-  fb = (dfb*rmseab^2)/sqrt(g)                        # model B discrepancy fn value
+  fa = (dfa*rmseaa^2)/sqrt(groups)                   # model A discrepancy fn value
+  fb = (dfb*rmseab^2)/sqrt(groups)                   # model B discrepancy fn value
   ncp = (nobsA - 1)*(fa - fb)                        # non-centrality parameter
   cval = qchisq(1 - alpha, df = ddiff, ncp = ncp)    # critical value from non-central chi^2
   sig = 1 - pchisq(chidiff, df = ddiff, ncp = ncp)   # p-value from non-central chi^2
