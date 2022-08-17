@@ -1,6 +1,7 @@
 # TOSDIF
 
-Convenient function for the test of small differences in fit as proposed by MacCallum et al. (2006).
+Convenient function for the test of small differences in fit as proposed by MacCallum et al. (2006).  
+This function is based on the R-Script by Dr. Timo Gnambs: <https://timo.gnambs.at/research/test-of-small-difference-in-fit-sem>
 
 This function depends on "lavaan" and "semTools", both of which you'll probably already have loaded at this point.
 
