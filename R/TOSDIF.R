@@ -7,7 +7,7 @@
 #' @param groups Number of groups in the model. Defaults to 1 if not specified
 #' @param alpha Significance level for the difference in fit. Defaults to 0.05 if not specified (recommended)
 #' @param rmseaa Upper limit used to define a small difference in fit. Defaults to 0.06 if not specified (recommended)
-#' @param rmseb Lower limit used to define a small difference in fit. Defaults to 0.05 if not specified (recommended)
+#' @param rmseab Lower limit used to define a small difference in fit. Defaults to 0.05 if not specified (recommended)
 #' @param robust Used to determine if robust version of Chi-Square should be used. Only available, if fit-objects were estimated using "estimator = MLR" or similar
 #' @return p-value for test of small differences in fit and interpretation
 #' @export 
@@ -18,16 +18,16 @@ tosdif = function(fit1, fit2, groups = NULL, alpha = NULL, rmseaa = NULL, rmseab
   cat("     Test of small differences in fit (McCallum et al., 2006)", "\n", "\n")
   
   # Get df from both model fits
-  df1 <- fitMeasures(fit1, "df")                
-  df2 <- fitMeasures(fit2, "df")  
+  df1 <- lavaan::fitMeasures(fit1, "df")                
+  df2 <- lavaan::fitMeasures(fit2, "df")  
   
   # dfa is always the model with more df
   dfa <- pmax(df1, df2)
   dfb <- pmin(df1, df2)
   
   # get n from the model fits and see if lavInspect gets the same sample size for both
-  nobsA = lavInspect(fitA, what = "nobs")
-  nobsB = lavInspect(fitB, what = "nobs")
+  nobsA = lavaan::lavInspect(fit1, what = "nobs")
+  nobsB = lavaan::lavInspect(fit2, what = "nobs")
   if (nobsA != nobsB) {
     warning("Warning: Unequal sample size for the two models. Preceed with caution. \n \n")
   }
@@ -57,16 +57,16 @@ tosdif = function(fit1, fit2, groups = NULL, alpha = NULL, rmseaa = NULL, rmseab
   }
   
   # if robust = TRUE or not specified, then use "chisq.scaled", else use "chisq"
-  if(robust && !is.na(lavInspect(fit1, "fit")["chisq.scaled"])) {
-    chidiff = abs(lavInspect(fit1, "fit")["chisq.scaled"] -
-                    lavInspect(fit2, "fit")["chisq.scaled"])
-  } else if (robust && is.na(lavInspect(fit1, "fit")["chisq.scaled"])) {
-    chidiff = abs(lavInspect(fit1, "fit")["chisq"] -
-                    lavInspect(fit2, "fit")["chisq"])
+  if(robust && !is.na(lavaan::lavInspect(fit1, "fit")["chisq.scaled"])) {
+    chidiff = abs(lavaan::lavInspect(fit1, "fit")["chisq.scaled"] -
+                    lavaan::lavInspect(fit2, "fit")["chisq.scaled"])
+  } else if (robust && is.na(lavaan::lavInspect(fit1, "fit")["chisq.scaled"])) {
+    chidiff = abs(lavaan::lavInspect(fit1, "fit")["chisq"] -
+                    lavaan::lavInspect(fit2, "fit")["chisq"])
     cat("\n Warning: Robust measures were not available. Standard chi-squared was used instead. Use estimator = 'MLR' to get robust measures. \n \n")
   } else if (!robust) {
-    chidiff = abs(lavInspect(fit1, "fit")["chisq"] -
-                    lavInspect(fit2, "fit")["chisq"])
+    chidiff = abs(lavaan::lavInspect(fit1, "fit")["chisq"] -
+                    lavaan::lavInspect(fit2, "fit")["chisq"])
   }
   
   
@@ -74,8 +74,8 @@ tosdif = function(fit1, fit2, groups = NULL, alpha = NULL, rmseaa = NULL, rmseab
   fa = (dfa*rmseaa^2)/sqrt(groups)                   # model A discrepancy fn value
   fb = (dfb*rmseab^2)/sqrt(groups)                   # model B discrepancy fn value
   ncp = (nobsA - 1)*(fa - fb)                        # non-centrality parameter
-  cval = qchisq(1 - alpha, df = ddiff, ncp = ncp)    # critical value from non-central chi^2
-  sig = 1 - pchisq(chidiff, df = ddiff, ncp = ncp)   # p-value from non-central chi^2
+  cval = stats::qchisq(1 - alpha, df = ddiff, ncp = ncp)    # critical value from non-central chi^2
+  sig = 1 - stats::pchisq(chidiff, df = ddiff, ncp = ncp)   # p-value from non-central chi^2
   rm(ddiff, fa, fb, ncp, cval)                       # remove unnecessary objects
   
   # print the p-value
