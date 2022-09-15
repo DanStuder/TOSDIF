@@ -10,3 +10,7 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.1
 Imports: 
     lavaan
+Suggests: 
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr
