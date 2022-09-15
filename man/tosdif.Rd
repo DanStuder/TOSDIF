@@ -25,9 +25,9 @@ tosdif(
 
 \item{rmseaa}{Upper limit used to define a small difference in fit. Defaults to 0.06 if not specified (recommended)}
 
-\item{robust}{Used to determine if robust version of Chi-Square should be used. Only available, if fit-objects were estimated using "estimator = MLR" or similar}
+\item{rmseab}{Lower limit used to define a small difference in fit. Defaults to 0.05 if not specified (recommended)}
 
-\item{rmseb}{Lower limit used to define a small difference in fit. Defaults to 0.05 if not specified (recommended)}
+\item{robust}{Used to determine if robust version of Chi-Square should be used. Only available, if fit-objects were estimated using "estimator = MLR" or similar}
 }
 \value{
 p-value for test of small differences in fit and interpretation
