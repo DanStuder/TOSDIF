@@ -69,7 +69,7 @@ fitB <- cfa(modelB, newdat, missing = "ML")
 For reasons of brevity and readability, the summary is commented out. However, the most important results are shown in the following fit-comparison:
 
 ```{r}
-summary(compareFit(fitA, fitB))
+summary(semTools::compareFit(fitA, fitB))
 ```
 
 This shows that both models seem to have acceptable fit and it can be argued which one should be chosen. While fitA might have somewhat better fit statistics, this comes at the price of 8 degrees of freedom. Therefore, we employ the test of small differences in fit to help us decide.
@@ -100,10 +100,12 @@ fitB_rob <- cfa(modelB, newdat, missing = "ML", estimator = "MLR")
 
 As can be seen, `semTools` function `compareFit` will also use robust variants of fit measures:
 ```{r}
-summary(compareFit(fitA_rob, fitB_rob))
+summary(semTools::compareFit(fitA_rob, fitB_rob))
 ```
 
-Now the tosdif:
+To use the robust variant of $\chi^2$, we set `robust = TRUE`:
 ```{r}
-tosdif(fitA, fitB, robust = TRUE)
+tosdif(fitA_rob, fitB_rob, robust = TRUE)
 ```
+
+$p$ is now $=.912$, so the interpretation does not change in this example.
