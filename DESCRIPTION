@@ -1,0 +1,10 @@
+Package: TOSDIF
+Title: Test of small differences in fit
+Version: 0.0.1
+Authors@R: 
+    person("Dan", "Studer", , "stude.dan@outlook.com", role = c("aut", "cre"))
+Description: Convenient function to run the test of small differences in fit requiring only the specification of two lavaan fit-objects.
+License: `use_mit_license()`
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.2.1
