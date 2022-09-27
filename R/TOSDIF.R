@@ -85,6 +85,6 @@ tosdif = function(fit1, fit2, groups = NULL, alpha = NULL, rmseaa = NULL, rmseab
   if(sig > 0.05) {
     cat("Interpretation: Test of small differences in fit is NOT significant. The models show at most a small difference in the model fit. Selecting the more parsimonious model (more df) is advised.")
   } else {
-    cat("Interpretation: Test of small differences in fit is significant. The models show a difference in fit that is greater than the operationalised acceptable difference.")
+    cat("Interpretation: Test of small differences in fit is significant. The models show a difference in fit that is greater than the operationalised acceptable difference. Selecting the less parsimonious model (less df) is advised.")
   }
 }
