@@ -1,0 +1,109 @@
+---
+title: "Introduction to usage of the test of small differences in fit"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Introduction to usage of the test of small differences in fit}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+https://www.youtube.com/watch?v=3N0klPMNyLY
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(TOSDIF)
+```
+
+# Introduction
+This is the introduction on how to use the test of small differences in fit.
+
+
+# Arguments
+First of all, let's have a look at the function as a whole:  
+`tosdif = function(fit1, fit2, groups = NULL, alpha = NULL, rmseaa = NULL, rmseab = NULL, robust = TRUE)`
+
+The function only needs two arguments to be specified: `fit1` and `fit2`, which are lavaan fit-objects.  
+`groups` is set to 1 by default and can be changed if your fits have more than one group.  
+`alpha`, `rmseaa` and `rmseab` also have default values. I recommend against changing these, but you can, if you wish to.  
+`robust` is also by default set to be `TRUE`, but will only work if the fitted lavaan objects contain the information for robust variants of chi-squared. This can be achieved by setting `estimator = 'MLR'` when fitting the object.  
+
+
+# Example
+Now we test the function. First, we're going to load `lavaan`, which has good datasets to use as examples:
+
+```{r, warning = FALSE}
+library(lavaan)
+newdat = HolzingerSwineford1939
+```
+
+Now we create two simple models:
+
+```{r}
+modelA <- '
+  # measurement model
+  v1 =~ x1 + x2 + x3
+  v2 =~ x4 + x5 + x6
+  v3 =~ x7 + x8 + x9
+'
+
+fitA <- cfa(modelA, newdat, missing = "ML")
+# summary(fitA, fit.measures = T, standardized = T)
+
+
+
+modelB <- '
+  # measurement model
+  v1 =~ x1 + x2 + x3
+  v2 =~ x4 + x5 + x6
+  v3 =~ x7 + x8 + x9 + grade
+'
+
+fitB <- cfa(modelB, newdat, missing = "ML")
+# summary(fitB, fit.measures = T, standardized = T)
+```
+
+For reasons of brevity and readability, the summary is commented out. However, the most important results are shown in the following fit-comparison:
+
+```{r}
+summary(compareFit(fitA, fitB))
+```
+
+This shows that both models seem to have acceptable fit and it can be argued which one should be chosen. While fitA might have somewhat better fit statistics, this comes at the price of 8 degrees of freedom. Therefore, we employ the test of small differences in fit to help us decide.
+Since we did not specify more than one group in the CFA, group can either be set to 1 or just be left out, since `groups = 1` is the default. We'll also leave `alpha`, `rmseaa` and `rmseab` at their defaults. Since we did not use a robust estimator when running the cfa, `robust = TRUE` is unavailable. We therefore only need to specify the two fit-objects:
+
+```{r}
+tosdif(fitA, fitB)
+```
+
+Interpreting the resulting p-value is rather easy, as there is also a verbal interpretation provided. This suggests using `fitB` is the better option.
+
+
+# Example with robust measures
+
+Using `robust = TRUE` when there are no robust measures available results in an error:
+
+```{r}
+tosdif(fitA, fitB, robust = TRUE)
+```
+The function will however automatically use the non-robust $\chi^2$.
+
+We could have chosen `MLR` as the estimator for the CFA, giving us the option of using `robust = TRUE`:
+
+```{r}
+fitA_rob <- cfa(modelA, newdat, missing = "ML", estimator = "MLR")
+fitB_rob <- cfa(modelB, newdat, missing = "ML", estimator = "MLR")
+```
+
+As can be seen, `semTools` function `compareFit` will also use robust variants of fit measures:
+```{r}
+summary(compareFit(fitA_rob, fitB_rob))
+```
+
+Now the tosdif:
+```{r}
+tosdif(fitA, fitB, robust = TRUE)
+```
